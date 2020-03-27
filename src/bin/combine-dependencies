@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# $ combine-dependencies services/foo/deps services/bar/deps ...
+#
+# prints something like the following to standard output:
+#
+# foo thingy
+# foo another-thingy
+# bar thingy
+# bar foo
+
+for depsfile in "$@"; do
+    service=$(basename $(dirname $depsfile))
+    for dep in $(paste -s -d" " $depsfile); do
+        echo "$service" "$dep"
+    done
+done
