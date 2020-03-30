@@ -71,6 +71,9 @@ the `PREFIX` variable is not set, then it defaults to `/usr/local`.  You might
 need to run the command with `sudo` if you don't have write permissions under
 `PREFIX`.
 
+`make uninstall` removed the previously installed files and directories,
+including any logs previously produced by `minit`.
+
 More
 ====
 Minit is a toy that doesn't do any of the following important things:

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# This script forwards its argument(s) to the work-doing makefile in
+# $(INSTALL_PREFIX)/etc/minit
+
+etc_minit="$(realpath $(dirname "$0")/../etc/minit)"
+
+make --directory="$etc_minit" "$@"
