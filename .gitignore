@@ -1,6 +1,7 @@
 src/var
-src/etd/minit/started/*
-src/etd/minit/stopped/*
+src/etc/minit/bin/init
+src/etc/minit/started/*
+src/etc/minit/stopped/*
 src/etc/minit/makefiles/*
 src/etc/minit/services/*
 src/etc/minit/dependencies.edges
