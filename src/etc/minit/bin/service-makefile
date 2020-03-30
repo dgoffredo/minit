@@ -1,0 +1,42 @@
+#!/bin/sh
+
+service="$1"           # name of the service
+
+dependency_graph="$2"  # file containing lines of service dependencies
+                       # "from to", where the service "from" has a direct
+                       # dependency on the service "to"
+
+minit_logs="$3"
+start_logs="$minit_logs.start/$service"
+stop_logs="$minit_logs.stop/$service"
+
+# This script outputs a makefile with two targets: "started/$service" and
+# "stopped/$service".  Each target depends upon certain files in "started/" or
+# "stopped/", respectively, as deduced from the $dependency_graph.
+#
+# The prerequisites of each target differ only by which directory they're in
+# ("started/" or "stopped/"), and whether in the relevant rows of
+# $dependency_graph, $service appears in the first column or in the second
+# column.  So, the function "prereqs" takes as its only argument a sed command
+# that extracts the relevant fields from $dependency_graph and transforms them
+# into prerequisite file names, e.g. "started/bar", and prints.
+prereqs() {
+    sed_expr="$1"
+    sed -n "$sed_expr" "$dependency_graph" | sort | uniq | paste -s -d' '
+}
+
+cat <<END_MAKEFILE
+$start_logs:
+	mkdir -p \$@
+
+$stop_logs:
+	mkdir -p \$@
+
+started/$service: $(prereqs "s/^$service \(\w\+\)/started\/\1/p") $start_logs
+	services/$service/init start >$start_logs/stdout 2>$start_logs/stderr
+	touch \$@
+
+stopped/$service: $(prereqs "s/^\(\w\+\) $service/stopped\/\1/p") $stop_logs
+	services/$service/init stop >$stop_logs/stdout 2>$stop_logs/stderr
+	touch \$@
+END_MAKEFILE

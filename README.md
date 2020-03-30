@@ -59,9 +59,9 @@ or, equivalently, like this:
 
 When `weatherd/init start` is executed, its output is written to the two files:
 
-    var/log/minit/$(date --iso-8601=ns --utc).start/weather/{stdout,stderr}
+    var/log/minit/$(date --utc +%s.%N).start/weather/{stdout,stderr}
 
-The directory `$(date --iso-8601=ns --utc)` is shared by all services for that
+The directory `$(date --utc +%s.%N)` is shared by all services for that
 particular invocation of `minit start` (i.e. the name of the directory is
 calculated only once per `minit` invocation).  Similarly for `minit stop`.
 
@@ -77,6 +77,7 @@ Minit is a toy that doesn't do any of the following important things:
 - [runlevels][4]
 - timeouts
 - different flavors of dependencies (e.g. `Should-Stop`, `Default-Start`)
+- sensible error reporting (`make` will just fart at you)
 
 It would not suffice at all as an `init` system for a real Linux distribution.
 However, if you have a subsystem of interrelated processes, such as a bunch
